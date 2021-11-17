@@ -1,0 +1,39 @@
+﻿@model TaxiOptimised.ViewModels.DriverOrderViewModel
+@{
+    ViewBag.Title = "Додати відстань водія до замовника";
+}
+<form asp-action="Add" asp-controller="DriverOrder">
+    <div class="form-group">
+        <label asp-for="DriverOrder.DriverId" class="control-label">Водій</label>
+        <select asp-for="DriverOrder.DriverId" aria-selected="False">
+            @foreach (Driver driver in Model.Drivers)
+            {
+                <option value="@driver.DriverId">@driver.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="DriverOrder.OrderId" class="control-label">Замовлення</label>
+        <select asp-for="DriverOrder.OrderId" aria-selected="False">
+            @foreach (Order order in Model.Orders)
+            {
+                <option value="@order.OrderId">@order.OrderId</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="DriverOrder.DistanceToDriver" class="control-label">Відстань водія до замовника</label>
+        <input type="text" asp-for="DriverOrder.DistanceToDriver" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DriverOrder.IsDesignated" class="control-label">Чи є оптимальним це замовлення для водія?</label>
+        <select asp-for="DriverOrder.IsDesignated" aria-selected="False">
+            <option value="true">Так</option>
+            <option value="false">Ні</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Зберегти" class="btn btn-outline-dark" />
+    </div>
+</form>

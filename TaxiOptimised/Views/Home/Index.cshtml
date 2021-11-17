@@ -1,0 +1,99 @@
+﻿@using System.Collections
+@{
+    ViewData["Title"] = "Home Page";
+
+}
+@model TaxiOptimised.ViewModels.HomeViewModel
+
+<a asp-action="Add" asp-controller="Driver" class="btn-default">Додати Водія</a>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Номер водія</th>
+        <th scope="col">ПІБ водія</th>
+        <th scope="col">Статус водія</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    @foreach (var driver in Model.Drivers)
+    {
+        <tr>
+            <th scope="row">@driver.DriverId</th>
+            <td>@driver.Name</td>
+
+            @if (driver.IsFree.Equals(true))
+            {
+                <td>Вільний</td>
+            }
+            else
+            {
+                <td>Виконує замовлення</td>
+            }
+
+            <td><a asp-action="Edit" asp-controller="Driver" asp-route-id="@driver.DriverId">Змінити</a></td>
+            <td><a asp-action="Delete" asp-controller="Driver" asp-route-id="@driver.DriverId">Видалити</a></td>
+
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+<a asp-action="Add" asp-controller="Order" class="btn-default">Додати замовлення</a>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Номер замовлення</th>
+        <th scope="col">Телефон замовника</th>
+        <th scope="col">Відстань до пункту призначення</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    @foreach (var order in Model.Orders)
+    {
+        <tr>
+            <th scope="row">@order.OrderId</th>
+            <td>@order.PhoneNumber</td>
+            <td>@order.Distance</td>
+            <td><a asp-action="Edit" asp-controller="Order" asp-route-id="@order.OrderId">Змінити</a></td>
+            <td><a asp-action="Delete" asp-controller="Order" asp-route-id="@order.OrderId">Видалити</a></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Add" asp-controller="DriverOrder" class="btn-default">Додати відстань</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Номер водія</th>
+            <th scope="col">Номер замовлення</th>
+            <th scope="col">ПІБ водія</th>
+            <th scope="col">Номер телефону замовника</th>
+            <th scope="col">Відстань водія до замовлення</th>
+            <th scope="col">Відстань від замовника до пункту призначення</th>
+            <th scope="col">Чи є оптимальним це замовлення для водія</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    @foreach (var driverOrder in Model.DriverOrders)
+    {
+        <tr>
+            <th scope="row">@driverOrder.DriverId</th>
+            <th scope="row">@driverOrder.OrderId</th>
+            <td>@driverOrder.Driver.Name</td>
+            <td>@driverOrder.Order.PhoneNumber</td>
+            <td>@driverOrder.DistanceToDriver</td>
+            <td>@driverOrder.Order.Distance</td>
+            <td>@driverOrder.IsDesignated</td>
+            <td><a asp-action="Edit" asp-controller="DriverOrder" asp-route-driverId="@driverOrder.DriverId" asp-route-orderId="@driverOrder.OrderId">Змінити</a></td>
+            <td><a asp-action="Delete" asp-controller="DriverOrder"  asp-route-driverId="@driverOrder.DriverId" asp-route-orderId="@driverOrder.OrderId">Видалити</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

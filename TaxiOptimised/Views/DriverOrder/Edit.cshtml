@@ -1,0 +1,40 @@
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Conventions
+@model DriverOrder
+@{
+    ViewBag.Title = "Редагування відстані від замовника до водія";
+}
+<form asp-action="Edit" asp-controller="DriverOrder" asp-route-driverId="@Model.DriverId" asp-route-orderId="@Model.OrderId">
+   
+    <div class="form-group">
+        <label asp-for="DriverId" class="control-label">Номер водія у системі</label>
+        <input type="text" asp-for="DriverId" value="@Model.DriverId" readonly="true" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Driver.Name" class="control-label">ПІБ водія</label>
+        <input type="text" asp-for="Driver.Name" value="@Model.Driver.Name" disabled="true" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="OrderId" class="control-label">Номер замовлення у системі</label>
+        <input type="text" asp-for="OrderId" value="@Model.OrderId" readonly="true" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Order.PhoneNumber" class="control-label">Номер телефону замовника</label>
+        <input type="text" asp-for="Order.PhoneNumber" value="@Model.Order.PhoneNumber" disabled="true" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DistanceToDriver" class="control-label">Відстань від замовника до водія</label>
+        <input type="text" asp-for="DistanceToDriver" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsDesignated" class="control-label">Чи є оптимальним це замовлення для водія?</label>
+        <select asp-for="IsDesignated" aria-selected="False">
+            <option value="true">Так</option>
+            <option value="false">Ні</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Зберегти" class="btn btn-outline-dark" />
+    </div>
+</form>

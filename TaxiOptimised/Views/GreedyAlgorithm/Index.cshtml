@@ -1,0 +1,64 @@
+﻿@using System.Collections
+@{
+    ViewData["Title"] = "Жадібний алгоритм";
+
+}
+@model TaxiOptimised.ViewModels.HomeViewModel
+
+<table class="table table-bordered text-center" id="mytable">
+    <thead>
+    <tr>
+        <th scope="col" rowspan="2">Водії</th>
+        <th scope="col" colspan="@Model.Orders.Count()" style="width: 100%; text-align: center">Замовлення</th>
+
+    </tr>
+    <tr>
+        @foreach (Order order in Model.Orders)
+        {
+
+            <th scope="col">@order.PhoneNumber</th>
+
+        }
+        <th>ai</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Driver driver in Model.Drivers)
+    {
+        <tr>
+            <th scope="row">@driver.Name</th>
+            @foreach (DriverOrder driverOrder in Model.DriverOrders)
+            {
+                if (driverOrder.DriverId == driver.DriverId)
+                {
+                    <td scope="row">@driverOrder.DistanceToDriver</td>
+                }
+            }
+            <td>1</td>
+        </tr>
+    }
+    <tr>
+        <th>bj</th>
+        @for (int i = 0; i < Model.Orders.Count(); i++)
+        {
+            <td>1</td>
+        }
+    </tr>
+    <tr>
+        <th>Відстань замовлення</th>
+        @foreach (Order order in Model.Orders)
+        {
+            <td scope="row">@order.Distance</td>
+        }
+    </tr>
+    </tbody>
+</table>
+<input type="button" value="Click" onclick="btnClick()"/>
+
+<script>
+    function btnClick() {
+        var x = document.getElementById("mytable").getElementsByTagName("td");
+        /*x[10].innerHTML = "i want to change my cell color";*/
+        x[15].style.backgroundColor = "yellow";            
+    }
+</script>

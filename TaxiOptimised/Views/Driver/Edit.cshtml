@@ -1,0 +1,26 @@
+﻿@model Driver
+@{
+    ViewBag.Title = "Редагування водія";
+}
+<form asp-action="Edit" asp-controller="Driver" asp-route-id="@Model.DriverId">
+    <div class="form-group">
+        <label asp-for="DriverId" class="control-label">Номер водія у системі</label>
+        <input type="text" asp-for="DriverId" value="@Model.DriverId" readonly="true" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Ім'я</label>
+        <input type="text" asp-for="Name" class="form-control"/>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsFree" class="control-label">Чи виконує водій замовлення</label>
+        <select asp-for="IsFree" aria-selected="False">
+            <option value="true">Вільний</option>
+            <option value="false">Виконує замовлення</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <input type ="submit" value="Зберегти" class="btn btn-outline-dark"/>
+    </div>
+    </form>
