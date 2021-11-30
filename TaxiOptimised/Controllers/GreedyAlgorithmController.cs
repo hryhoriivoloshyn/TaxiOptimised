@@ -12,12 +12,12 @@ namespace TaxiOptimised.Controllers
     public class GreedyAlgorithmController : Controller
     {
         private TaxiOptDBContext db;
-        private HomeViewModel viewModel;
+        private GreedyAlgorithmViewModel viewModel;
 
         public GreedyAlgorithmController(TaxiOptDBContext context)
         {
             db = context;
-            viewModel = new HomeViewModel()
+            viewModel = new GreedyAlgorithmViewModel()
             {
                 Drivers = db.Drivers.ToList(),
                 Orders = db.Orders.ToList(),
@@ -25,23 +25,48 @@ namespace TaxiOptimised.Controllers
             };
         }
 
-        private async Task CalculateGreedyAlgorithm(HomeViewModel viewModel)
+        private class CalculationResult
         {
-            IEnumerable<Driver> drivers = viewModel.Drivers;
-            IEnumerable<Order> orders = viewModel.Orders;
-            IEnumerable<DriverOrder> driverOrders = viewModel.DriverOrders;
+            public IEnumerable<DriverOrder> ResultedSequence { get; set; }
+            public double Result { get; set; }
+        }
+        private async Task<CalculationResult> CalculateGreedyAlgorithm(GreedyAlgorithmViewModel viewModel)
+        {
+          
+            List<DriverOrder> driverOrders = viewModel.DriverOrders.ToList();
 
             double maxProfitRatio = 0;
+            DriverOrder bestOption = new DriverOrder();
             double profitRatio;
-            foreach (var drOrders in driverOrders)
+            List<DriverOrder> resultedSequence=new List<DriverOrder>();
+            double greedyResult = 0;
+            while (driverOrders.Count!=0)
             {
-                profitRatio = (1 / drOrders.DistanceToDriver + drOrders.Order.Distance);
-                //if (drOrders.DistanceToDriver > minToDriver || drOrders.Order.Distance < maxOrderDistance)
-                //{
-                    
+                maxProfitRatio = 0;
+                
+                foreach (var drOrders in driverOrders)
+                {
 
-                //}
+                    profitRatio = (1 / drOrders.DistanceToDriver + (double)drOrders.Order.Distance);
+                    if (profitRatio > maxProfitRatio)
+                    {
+                        maxProfitRatio = profitRatio;
+                        bestOption = drOrders;
+                    }
+                }
+                resultedSequence.Add(bestOption);
+                greedyResult += maxProfitRatio;
+                
+                driverOrders.RemoveAll(p=>p.DriverId==bestOption.DriverId);
+                driverOrders.RemoveAll(p => p.OrderId == bestOption.OrderId);
             }
+
+            CalculationResult result = new CalculationResult()
+            {
+                ResultedSequence = resultedSequence,
+                Result = greedyResult
+            };
+            return result;
         }
 
         [HttpGet]
@@ -53,6 +78,10 @@ namespace TaxiOptimised.Controllers
                 driverOrder.Order = await db.Orders.FirstOrDefaultAsync(p => p.OrderId == driverOrder.OrderId);
 
             }
+
+            CalculationResult algResult = await CalculateGreedyAlgorithm(viewModel);
+            viewModel.ResultedSequence = algResult.ResultedSequence;
+            viewModel.Result = algResult.Result;
             return View(viewModel);
         }
     }

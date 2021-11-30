@@ -29,7 +29,8 @@ namespace TaxiOptimised
             // добавляем контекст MobileContext в качестве сервиса в приложение
             services.AddDbContext<TaxiOptDBContext>(options =>
                 options.UseSqlServer(connection));
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

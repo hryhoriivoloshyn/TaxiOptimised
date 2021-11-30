@@ -1,16 +1,17 @@
 ﻿@using System.Collections
+@using Newtonsoft.Json
+
 @{
     ViewData["Title"] = "Жадібний алгоритм";
 
 }
-@model TaxiOptimised.ViewModels.HomeViewModel
+@model TaxiOptimised.ViewModels.GreedyAlgorithmViewModel
 
 <table class="table table-bordered text-center" id="mytable">
     <thead>
     <tr>
         <th scope="col" rowspan="2">Водії</th>
         <th scope="col" colspan="@Model.Orders.Count()" style="width: 100%; text-align: center">Замовлення</th>
-
     </tr>
     <tr>
         @foreach (Order order in Model.Orders)
@@ -31,7 +32,7 @@
             {
                 if (driverOrder.DriverId == driver.DriverId)
                 {
-                    <td scope="row">@driverOrder.DistanceToDriver</td>
+                    <td class="DriversOrdersCell" id="@driverOrder.OrderId@driverOrder.DriverId" scope="row">@driverOrder.DistanceToDriver</td>
                 }
             }
             <td>1</td>
@@ -42,7 +43,9 @@
         @for (int i = 0; i < Model.Orders.Count(); i++)
         {
             <td>1</td>
+
         }
+        <td id="result" scope="col" rowspan="2"></td>
     </tr>
     <tr>
         <th>Відстань замовлення</th>
@@ -53,12 +56,72 @@
     </tr>
     </tbody>
 </table>
-<input type="button" value="Click" onclick="btnClick()"/>
+<input type="text" id="step" value="0" hidden="true" />
+<input class="btn btn-primary" type="button" value="Розрахувати алгоритм" onclick="btnClick()"/>
 
 <script>
+
+
     function btnClick() {
-        var x = document.getElementById("mytable").getElementsByTagName("td");
+        var jsonString = '@Html.Raw(JsonConvert.SerializeObject(Model.ResultedSequence))';
+        var stepsList = JSON.parse(jsonString);
+        var x = document.getElementsByClassName("DriversOrdersCell");
+        
+        var step = parseInt(document.getElementsByClassName("step").value, 10);
+        step = isNaN(step) ? 0 : step;
+        if (step == 0)
+            for (let i = 0; i < x.length; i++) {
+                x[i].innerHTML = x[i].innerHTML+"*0";
+
+            }
+        Calculate(step, stepsList);
+        step++;
+        document.getElementsByClassName("step").value = step;
+
+        if (step == stepsList.length) {
+            var resultJson = '@Html.Raw(JsonConvert.SerializeObject(Model.Result))';
+            var result = JSON.parse(resultJson);
+            var resultCell = document.getElementById("result");
+            resultCell.innerHTML = Math.round(result*1000)/1000;
+            resultCell.style.backgroundColor = "greenyellow";
+        }
+
+        function Calculate(i, stepsList) {
+            setTimeout(function () {
+                var x = document.getElementById(stepsList[i].Order.OrderId + "" + stepsList[i].Driver.DriverId);
+                x.style.backgroundColor = "yellow";
+                var distanceToDriver = stepsList[i].DistanceToDriver;
+                var orderDistance = stepsList[i].Order.Distance;
+                var profitRatio = (1 / distanceToDriver) + orderDistance;
+                var resultDistance = distanceToDriver + orderDistance;
+                x.innerHTML = "Відстань: " + Math.round(resultDistance * 1000) / 1000 + "(" + distanceToDriver + "+" +
+                    +orderDistance+")"+"км " + "Оцінка замовлення: " + Math.round(profitRatio * 1000) / 1000;
+
+
+            }, 100*i);
+
+        }
+
+       
+        //for (var i = 0; i < stepsList.length; i++) {
+
+
+        //    Calculate(i, stepsList);
+
+        //    /*setTimeout(() => { document.getElementById(stepsList[i].Order.OrderId + "" + stepsList[i].Driver.DriverId).style.backgroundColor = "yellow"; }, 2000)*/;
+
+        //}
+    
+
         /*x[10].innerHTML = "i want to change my cell color";*/
-        x[15].style.backgroundColor = "yellow";            
+        //var x = document.getElementById("11");
+        //x.style.backgroundColor = "yellow";
+
+
     }
+
+</script>
+<script>
+    
+    
 </script>
